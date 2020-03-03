@@ -2788,25 +2788,29 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const core_1 = __importDefault(__webpack_require__(470));
+const core = __importStar(__webpack_require__(470));
 const notify_1 = __webpack_require__(293);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const url = core_1.default.getInput('url', { required: true });
+            const url = core.getInput('url', { required: true });
             yield notify_1.sendMessage(url);
-            core_1.default.info('sent message');
+            core.info('sent message');
         }
         catch (error) {
-            core_1.default.setFailed(error.message);
+            core.setFailed(error.message);
         }
     });
 }
-run().catch(e => core_1.default.info(e));
+run().catch(e => core.info(e));
 
 
 /***/ }),
@@ -5210,12 +5214,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const core_1 = __importDefault(__webpack_require__(470));
-const github_1 = __importDefault(__webpack_require__(469));
+const core = __importStar(__webpack_require__(470));
+const github = __importStar(__webpack_require__(469));
 const axios_1 = __importDefault(__webpack_require__(53));
 function getTextColor(state) {
     switch (state) {
@@ -5233,12 +5244,12 @@ const textButton = (text, url) => ({
 });
 function sendMessage(url) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (github_1.default.context.eventName === 'pull_request') {
-            const { owner, repo } = github_1.default.context.repo;
-            const pullRequestPayload = github_1.default.context
+        if (github.context.eventName === 'pull_request') {
+            const { owner, repo } = github.context.repo;
+            const pullRequestPayload = github.context
                 .payload;
             const pullRequest = pullRequestPayload.pull_request;
-            core_1.default.info(`${pullRequest.title} ${pullRequest.state} by ${pullRequest.user.login}`);
+            core.info(`${pullRequest.title} ${pullRequest.state} by ${pullRequest.user.login}`);
             const body = {
                 cards: [
                     {
