@@ -5242,15 +5242,6 @@ const textButton = (text, url) => ({
         onClick: { openLink: { url } }
     }
 });
-const getBottomWidgets = (pullRequest) => {
-    return pullRequest.state === 'closed'
-        ? []
-        : [
-            {
-                buttons: [textButton('GOTO REVIEW', pullRequest.html_url)]
-            }
-        ];
-};
 function sendMessage(url) {
     return __awaiter(this, void 0, void 0, function* () {
         if (github.context.eventName === 'pull_request') {
@@ -5292,14 +5283,21 @@ function sendMessage(url) {
                                         }
                                     }
                                 ]
-                            },
-                            {
-                                widgets: getBottomWidgets(pullRequest)
                             }
                         ]
                     }
                 ]
             };
+            if (pullRequest.state !== 'closed') {
+                body.cards[0].sections.push({
+                    widgets: [
+                        {
+                            buttons: [textButton('GOTO REVIEW', pullRequest.html_url)]
+                        }
+                    ]
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                });
+            }
             const response = yield axios_1.default.post(url, body);
             if (response.status !== 200) {
                 throw new Error(`Google Chat notification failed. response status=${response.status}`);

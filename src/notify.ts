@@ -1,6 +1,5 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
-import {WebhookPayloadPullRequestPullRequest} from '@octokit/webhooks'
 import * as Webhooks from '@octokit/webhooks'
 import axios from 'axios'
 
@@ -23,18 +22,6 @@ const textButton = (text: string, url: string): TextButton => ({
     onClick: {openLink: {url}}
   }
 })
-
-const getBottomWidgets = (
-  pullRequest: WebhookPayloadPullRequestPullRequest
-): {buttons: TextButton[]}[] => {
-  return pullRequest.state === 'closed'
-    ? []
-    : [
-        {
-          buttons: [textButton('GOTO REVIEW', pullRequest.html_url)]
-        }
-      ]
-}
 
 export async function sendMessage(url: string): Promise<void> {
   if (github.context.eventName === 'pull_request') {
@@ -84,13 +71,21 @@ export async function sendMessage(url: string): Promise<void> {
                   }
                 }
               ]
-            },
-            {
-              widgets: getBottomWidgets(pullRequest)
             }
           ]
         }
       ]
+    }
+
+    if (pullRequest.state !== 'closed') {
+      body.cards[0].sections.push({
+        widgets: [
+          {
+            buttons: [textButton('GOTO REVIEW', pullRequest.html_url)]
+          }
+        ]
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any)
     }
 
     const response = await axios.post(url, body)
