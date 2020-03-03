@@ -1,6 +1,6 @@
-import core from '@actions/core'
-import github from '@actions/github'
-import Webhooks from '@octokit/webhooks'
+import * as core from '@actions/core'
+import * as github from '@actions/github'
+import * as Webhooks from '@octokit/webhooks'
 import axios from 'axios'
 
 interface TextButton {
