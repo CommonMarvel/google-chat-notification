@@ -1,10 +1,19 @@
-import * as core from '@actions/core'
-import * as github from '@actions/github'
-import * as Webhooks from '@octokit/webhooks'
+import core from '@actions/core'
+import github from '@actions/github'
+import Webhooks from '@octokit/webhooks'
 import axios from 'axios'
 
 interface TextButton {
   textButton: {text: string; onClick: {openLink: {url: string}}}
+}
+
+function getTextColor(state: string): string {
+  switch (state) {
+    case 'closed':
+      return '#ff0000'
+    default:
+      return '#2cbe4e'
+  }
 }
 
 const textButton = (text: string, url: string): TextButton => ({
@@ -20,7 +29,9 @@ export async function sendMessage(url: string): Promise<void> {
     const pullRequestPayload = github.context
       .payload as Webhooks.WebhookPayloadPullRequest
     const pullRequest = pullRequestPayload.pull_request
-    core.info(`${pullRequest.title} created by ${pullRequest.user.login}`)
+    core.info(
+      `${pullRequest.title} ${pullRequest.state} by ${pullRequest.user.login}`
+    )
 
     const body = {
       cards: [
@@ -30,7 +41,9 @@ export async function sendMessage(url: string): Promise<void> {
               widgets: [
                 {
                   textParagraph: {
-                    text: `<b><font color="#2cbe4e">${pullRequest.title}</font></b>`
+                    text: `<b><font color="${getTextColor(
+                      pullRequest.state
+                    )}">${pullRequest.title}</font></b>`
                   }
                 }
               ]
@@ -62,7 +75,7 @@ export async function sendMessage(url: string): Promise<void> {
             {
               widgets: [
                 {
-                  buttons: [textButton('OPEN CHECKS', pullRequest.html_url)]
+                  buttons: [textButton('GOTO REVIEW', pullRequest.html_url)]
                 }
               ]
             }

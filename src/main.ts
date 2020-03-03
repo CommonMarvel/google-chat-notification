@@ -1,4 +1,4 @@
-import * as core from '@actions/core'
+import core from '@actions/core'
 import {sendMessage} from './notify'
 
 async function run(): Promise<void> {
@@ -11,4 +11,4 @@ async function run(): Promise<void> {
   }
 }
 
-run()
+run().catch(e => core.info(e))
