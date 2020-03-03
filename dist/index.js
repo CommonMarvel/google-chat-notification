@@ -2788,29 +2788,25 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const core = __importStar(__webpack_require__(470));
+const core_1 = __importDefault(__webpack_require__(470));
 const notify_1 = __webpack_require__(293);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const url = core.getInput('url', { required: true });
+            const url = core_1.default.getInput('url', { required: true });
             yield notify_1.sendMessage(url);
-            core.info('sent message');
+            core_1.default.info('sent message');
         }
         catch (error) {
-            core.setFailed(error.message);
+            core_1.default.setFailed(error.message);
         }
     });
 }
-run();
+run().catch(e => core_1.default.info(e));
 
 
 /***/ }),
@@ -5214,20 +5210,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const core = __importStar(__webpack_require__(470));
-const github = __importStar(__webpack_require__(469));
+const core_1 = __importDefault(__webpack_require__(470));
+const github_1 = __importDefault(__webpack_require__(469));
 const axios_1 = __importDefault(__webpack_require__(53));
+function getTextColor(state) {
+    switch (state) {
+        case 'closed':
+            return '#ff0000';
+        default:
+            return '#2cbe4e';
+    }
+}
 const textButton = (text, url) => ({
     textButton: {
         text,
@@ -5236,12 +5233,12 @@ const textButton = (text, url) => ({
 });
 function sendMessage(url) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (github.context.eventName === 'pull_request') {
-            const { owner, repo } = github.context.repo;
-            const pullRequestPayload = github.context
+        if (github_1.default.context.eventName === 'pull_request') {
+            const { owner, repo } = github_1.default.context.repo;
+            const pullRequestPayload = github_1.default.context
                 .payload;
             const pullRequest = pullRequestPayload.pull_request;
-            core.info(`${pullRequest.title} created by ${pullRequest.user.login}`);
+            core_1.default.info(`${pullRequest.title} ${pullRequest.state} by ${pullRequest.user.login}`);
             const body = {
                 cards: [
                     {
@@ -5250,7 +5247,7 @@ function sendMessage(url) {
                                 widgets: [
                                     {
                                         textParagraph: {
-                                            text: `<b>PR has been ${pullRequest.state} <font color="#2cbe4e">${pullRequest.title}</font></b>`
+                                            text: `<b><font color="${getTextColor(pullRequest.state)}">${pullRequest.title}</font></b>`
                                         }
                                     }
                                 ]
@@ -5262,24 +5259,24 @@ function sendMessage(url) {
                                             topLabel: 'repository',
                                             content: `${owner}/${repo}`,
                                             contentMultiline: true,
-                                            button: textButton('OPEN REPOSITORY', pullRequestPayload.repository.url)
+                                            button: textButton('OPEN REPOSITORY', pullRequestPayload.repository.html_url)
                                         }
                                     },
                                     {
                                         keyValue: {
-                                            topLabel: 'event name',
-                                            content: github.context.eventName
+                                            topLabel: 'event type',
+                                            content: pullRequest.state
                                         }
                                     },
                                     {
-                                        keyValue: { topLabel: 'ref', content: github.context.ref }
+                                        keyValue: { topLabel: 'ref', content: pullRequest.head.ref }
                                     }
                                 ]
                             },
                             {
                                 widgets: [
                                     {
-                                        buttons: [textButton('OPEN CHECKS', pullRequest.url)]
+                                        buttons: [textButton('GOTO REVIEW', pullRequest.html_url)]
                                     }
                                 ]
                             }
