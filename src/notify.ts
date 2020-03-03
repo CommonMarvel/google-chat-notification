@@ -30,7 +30,7 @@ export async function sendMessage(url: string): Promise<void> {
               widgets: [
                 {
                   textParagraph: {
-                    text: `<b>PR has been ${pullRequest.state} <font color="#2cbe4e">${pullRequest.title}</font></b>`
+                    text: `<b><font color="#2cbe4e">${pullRequest.title}</font></b>`
                   }
                 }
               ]
@@ -44,25 +44,25 @@ export async function sendMessage(url: string): Promise<void> {
                     contentMultiline: true,
                     button: textButton(
                       'OPEN REPOSITORY',
-                      pullRequestPayload.repository.url
+                      pullRequestPayload.repository.html_url
                     )
                   }
                 },
                 {
                   keyValue: {
-                    topLabel: 'event name',
-                    content: github.context.eventName
+                    topLabel: 'event type',
+                    content: pullRequest.state
                   }
                 },
                 {
-                  keyValue: {topLabel: 'ref', content: github.context.ref}
+                  keyValue: {topLabel: 'ref', content: pullRequest.head.ref}
                 }
               ]
             },
             {
               widgets: [
                 {
-                  buttons: [textButton('OPEN CHECKS', pullRequest.url)]
+                  buttons: [textButton('OPEN CHECKS', pullRequest.html_url)]
                 }
               ]
             }
