@@ -4,7 +4,7 @@
 
 ### Usage
 
-Add `notify.yml` to `.github/workflows/
+Add `notify.yml` to `.github/workflows/`
 
 ```yaml
 name: notify

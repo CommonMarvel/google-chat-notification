@@ -5242,6 +5242,15 @@ const textButton = (text, url) => ({
         onClick: { openLink: { url } }
     }
 });
+const getBottomWidgets = (pullRequest) => {
+    return pullRequest.state === 'closed'
+        ? []
+        : [
+            {
+                buttons: [textButton('GOTO REVIEW', pullRequest.html_url)]
+            }
+        ];
+};
 function sendMessage(url) {
     return __awaiter(this, void 0, void 0, function* () {
         if (github.context.eventName === 'pull_request') {
@@ -5274,22 +5283,18 @@ function sendMessage(url) {
                                         }
                                     },
                                     {
-                                        keyValue: {
-                                            topLabel: 'event type',
-                                            content: pullRequest.state
-                                        }
+                                        keyValue: { topLabel: 'ref', content: pullRequest.head.ref }
                                     },
                                     {
-                                        keyValue: { topLabel: 'ref', content: pullRequest.head.ref }
+                                        keyValue: {
+                                            topLabel: 'author',
+                                            content: pullRequest.user.login
+                                        }
                                     }
                                 ]
                             },
                             {
-                                widgets: [
-                                    {
-                                        buttons: [textButton('GOTO REVIEW', pullRequest.html_url)]
-                                    }
-                                ]
+                                widgets: getBottomWidgets(pullRequest)
                             }
                         ]
                     }
