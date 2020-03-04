@@ -5228,13 +5228,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
 const github = __importStar(__webpack_require__(469));
 const axios_1 = __importDefault(__webpack_require__(53));
-function getTextColor(state) {
-    switch (state) {
-        case 'closed':
-            return '#ff0000';
-        default:
-            return '#2cbe4e';
+function getTextColor(state, isMerged) {
+    if (isMerged) {
+        return '#6f42c1';
     }
+    if (state === 'closed') {
+        return '#ff0000';
+    }
+    return '#2cbe4e';
 }
 const textButton = (text, url) => ({
     textButton: {
@@ -5244,9 +5245,6 @@ const textButton = (text, url) => ({
 });
 function sendMessage(url) {
     return __awaiter(this, void 0, void 0, function* () {
-        core.info('github.context.eventName:');
-        core.info(github.context.eventName);
-        core.info(JSON.stringify(github.context));
         if (github.context.eventName === 'pull_request') {
             const { owner, repo } = github.context.repo;
             const pullRequestPayload = github.context
@@ -5261,7 +5259,7 @@ function sendMessage(url) {
                                 widgets: [
                                     {
                                         textParagraph: {
-                                            text: `<b><font color="${getTextColor(pullRequest.state)}">${pullRequest.title}</font></b>`
+                                            text: `<b><font color="${getTextColor(pullRequest.state, pullRequest.merged)}">${pullRequest.title}</font></b>`
                                         }
                                     }
                                 ]
@@ -5305,6 +5303,9 @@ function sendMessage(url) {
             if (response.status !== 200) {
                 throw new Error(`Google Chat notification failed. response status=${response.status}`);
             }
+        }
+        else {
+            core.info(`event: ${github.context.eventName} not pull_request`);
         }
     });
 }
