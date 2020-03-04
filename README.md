@@ -22,5 +22,4 @@ jobs:
       uses: CommonMarvel/google-chat-notification@master
       with:
         url: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
-      if: always()
 ```

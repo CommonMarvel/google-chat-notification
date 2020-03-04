@@ -7,13 +7,16 @@ interface TextButton {
   textButton: {text: string; onClick: {openLink: {url: string}}}
 }
 
-function getTextColor(state: string): string {
-  switch (state) {
-    case 'closed':
-      return '#ff0000'
-    default:
-      return '#2cbe4e'
+function getTextColor(state: string, isMerged: boolean): string {
+  if (isMerged) {
+    return '#6f42c1'
   }
+
+  if (state === 'closed') {
+    return '#ff0000'
+  }
+
+  return '#2cbe4e'
 }
 
 const textButton = (text: string, url: string): TextButton => ({
@@ -24,9 +27,6 @@ const textButton = (text: string, url: string): TextButton => ({
 })
 
 export async function sendMessage(url: string): Promise<void> {
-  core.info('github.context.eventName:')
-  core.info(github.context.eventName)
-  core.info(JSON.stringify(github.context))
   if (github.context.eventName === 'pull_request') {
     const {owner, repo} = github.context.repo
     const pullRequestPayload = github.context
@@ -45,7 +45,8 @@ export async function sendMessage(url: string): Promise<void> {
                 {
                   textParagraph: {
                     text: `<b><font color="${getTextColor(
-                      pullRequest.state
+                      pullRequest.state,
+                      pullRequest.merged
                     )}">${pullRequest.title}</font></b>`
                   }
                 }
@@ -97,5 +98,7 @@ export async function sendMessage(url: string): Promise<void> {
         `Google Chat notification failed. response status=${response.status}`
       )
     }
+  } else {
+    core.info(`event: ${github.context.eventName} not pull_request`)
   }
 }
