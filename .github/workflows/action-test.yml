@@ -1,0 +1,15 @@
+name: "notify-test"
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - closed
+jobs:
+  test: # make sure the action works on a clean machine without building
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: ./
+        with:
+          url: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}

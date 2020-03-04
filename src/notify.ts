@@ -24,6 +24,9 @@ const textButton = (text: string, url: string): TextButton => ({
 })
 
 export async function sendMessage(url: string): Promise<void> {
+  core.info('github.context.eventName:')
+  core.info(github.context.eventName)
+  core.info(JSON.stringify(github.context))
   if (github.context.eventName === 'pull_request') {
     const {owner, repo} = github.context.repo
     const pullRequestPayload = github.context
