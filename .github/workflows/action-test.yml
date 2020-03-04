@@ -1,4 +1,4 @@
-name: "build-test"
+name: "notify-test"
 on:
   pull_request:
     types:
