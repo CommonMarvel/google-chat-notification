@@ -5244,6 +5244,9 @@ const textButton = (text, url) => ({
 });
 function sendMessage(url) {
     return __awaiter(this, void 0, void 0, function* () {
+        core.info('github.context.eventName:');
+        core.info(github.context.eventName);
+        core.info(JSON.stringify(github.context));
         if (github.context.eventName === 'pull_request') {
             const { owner, repo } = github.context.repo;
             const pullRequestPayload = github.context
