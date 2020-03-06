@@ -136,6 +136,7 @@ async function processPullRequestComment(): Promise<object> {
 
 export async function sendMessage(url: string): Promise<void> {
   core.info(github.context.eventName)
+  core.info(JSON.stringify(github.context.payload))
   let body = null
   if (github.context.eventName === 'pull_request') {
     body = await processPullRequest()
