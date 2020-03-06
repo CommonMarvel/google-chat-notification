@@ -6,6 +6,7 @@
 
 Add `notify.yml` to `.github/workflows/`
 
+> .github/workflows/notify.yml
 ```yaml
 name: notify
 on:
