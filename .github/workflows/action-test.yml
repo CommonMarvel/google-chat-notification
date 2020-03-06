@@ -1,10 +1,9 @@
 name: "notify-test"
 on:
   pull_request:
-    types:
-      - opened
-      - reopened
-      - closed
+    types: [opened, reopened, closed]
+  pull_request_review_comment:
+    types: [created]
 jobs:
   test: # make sure the action works on a clean machine without building
     runs-on: ubuntu-latest

@@ -2810,7 +2810,7 @@ function run() {
         }
     });
 }
-run().catch(e => core.info(e));
+run();
 
 
 /***/ }),
@@ -5228,15 +5228,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
 const github = __importStar(__webpack_require__(469));
 const axios_1 = __importDefault(__webpack_require__(53));
-function getTextColor(state, isMerged) {
-    if (isMerged) {
-        return '#6f42c1';
-    }
-    if (state === 'closed') {
-        return '#ff0000';
-    }
-    return '#2cbe4e';
-}
 const textButton = (text, url) => ({
     textButton: {
         text,
@@ -5250,7 +5241,7 @@ function sendMessage(url) {
             const pullRequestPayload = github.context
                 .payload;
             const pullRequest = pullRequestPayload.pull_request;
-            core.info(`${pullRequest.title} ${pullRequest.state} by ${pullRequest.user.login}`);
+            core.info(`${pullRequest.title} created by ${pullRequest.user.login}`);
             const body = {
                 cards: [
                     {
@@ -5259,7 +5250,7 @@ function sendMessage(url) {
                                 widgets: [
                                     {
                                         textParagraph: {
-                                            text: `<b><font color="${getTextColor(pullRequest.state, pullRequest.merged)}">${pullRequest.title}</font></b>`
+                                            text: `<b><font color="#2cbe4e">${pullRequest.title}</font></b>`
                                         }
                                     }
                                 ]
@@ -5275,13 +5266,20 @@ function sendMessage(url) {
                                         }
                                     },
                                     {
-                                        keyValue: { topLabel: 'ref', content: pullRequest.head.ref }
+                                        keyValue: {
+                                            topLabel: 'event type',
+                                            content: pullRequest.state
+                                        }
                                     },
                                     {
-                                        keyValue: {
-                                            topLabel: 'author',
-                                            content: pullRequest.user.login
-                                        }
+                                        keyValue: { topLabel: 'ref', content: pullRequest.head.ref }
+                                    }
+                                ]
+                            },
+                            {
+                                widgets: [
+                                    {
+                                        buttons: [textButton('OPEN CHECKS', pullRequest.html_url)]
                                     }
                                 ]
                             }
@@ -5289,23 +5287,10 @@ function sendMessage(url) {
                     }
                 ]
             };
-            if (pullRequest.state !== 'closed') {
-                body.cards[0].sections.push({
-                    widgets: [
-                        {
-                            buttons: [textButton('GOTO REVIEW', pullRequest.html_url)]
-                        }
-                    ]
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                });
-            }
             const response = yield axios_1.default.post(url, body);
             if (response.status !== 200) {
                 throw new Error(`Google Chat notification failed. response status=${response.status}`);
             }
-        }
-        else {
-            core.info(`event: ${github.context.eventName} not pull_request`);
         }
     });
 }
