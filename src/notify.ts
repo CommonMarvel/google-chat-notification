@@ -95,11 +95,43 @@ async function processPullRequest(): Promise<object> {
 }
 
 async function processPullRequestComment(): Promise<object> {
-  const comment = github.context
+  const commentPayload = github.context
     .payload as Webhooks.WebhookPayloadPullRequestReviewComment
-  core.info(JSON.stringify(comment))
-  const body = {text: 'new comment'}
-  return body
+  const pullRequest = commentPayload.pull_request
+  const comment = commentPayload.comment
+  return {
+    cards: [
+      {
+        sections: [
+          {
+            widgets: [
+              {
+                textParagraph: {
+                  text: `<b>Comment to <font color="#ff9800">${pullRequest.title}</font></b>`
+                }
+              }
+            ]
+          },
+          {
+            widgets: [
+              {
+                textParagraph: {
+                  text: `<font color="#333">${comment.body}</font><br>By <b>${comment.user.login}</b>`
+                }
+              }
+            ]
+          },
+          {
+            widgets: [
+              {
+                buttons: [textButton('GOTO CHECK', comment.html_url)]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 }
 
 export async function sendMessage(url: string): Promise<void> {
