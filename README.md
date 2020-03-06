@@ -1,6 +1,4 @@
-<p align="center">
-  <a href="https://github.com/CommonMarvel/google-chat-notification/actions"><img alt="google-chat-notification status" src="https://github.com/CommonMarvel/google-chat-notification/workflows/build-test/badge.svg"></a>
-</p>
+<a href="https://github.com/CommonMarvel/google-chat-notification/actions"><img alt="google-chat-notification status" src="https://github.com/CommonMarvel/google-chat-notification/workflows/build-test/badge.svg"></a>
 
 ![Success](doc/new.png "New")
 ![Cancelled](doc/comment.png "Comment")
@@ -23,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Google Chat Notification
-      uses: CommonMarvel/google-chat-notification@master
+      uses: CommonMarvel/google-chat-notification@v1.0.0
       with:
         url: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
 ```
