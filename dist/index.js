@@ -5243,69 +5243,123 @@ const textButton = (text, url) => ({
         onClick: { openLink: { url } }
     }
 });
-function sendMessage(url) {
+function processPullRequest() {
     return __awaiter(this, void 0, void 0, function* () {
-        if (github.context.eventName === 'pull_request') {
-            const { owner, repo } = github.context.repo;
-            const pullRequestPayload = github.context
-                .payload;
-            const pullRequest = pullRequestPayload.pull_request;
-            core.info(`${pullRequest.title} ${pullRequest.state} by ${pullRequest.user.login}`);
-            const body = {
-                cards: [
-                    {
-                        sections: [
-                            {
-                                widgets: [
-                                    {
-                                        textParagraph: {
-                                            text: `<b><font color="${getTextColor(pullRequest.state, pullRequest.merged)}">${pullRequest.title}</font></b>`
-                                        }
-                                    }
-                                ]
-                            },
-                            {
-                                widgets: [
-                                    {
-                                        keyValue: {
-                                            topLabel: 'repository',
-                                            content: `${owner}/${repo}`,
-                                            contentMultiline: true,
-                                            button: textButton('OPEN REPOSITORY', pullRequestPayload.repository.html_url)
-                                        }
-                                    },
-                                    {
-                                        keyValue: { topLabel: 'ref', content: pullRequest.head.ref }
-                                    },
-                                    {
-                                        keyValue: {
-                                            topLabel: 'author',
-                                            content: pullRequest.user.login
-                                        }
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]
-            };
-            if (pullRequest.state !== 'closed') {
-                body.cards[0].sections.push({
-                    widgets: [
+        const { owner, repo } = github.context.repo;
+        const pullRequestPayload = github.context
+            .payload;
+        const pullRequest = pullRequestPayload.pull_request;
+        core.info(`${pullRequest.title} ${pullRequest.state} by ${pullRequest.user.login}`);
+        const body = {
+            cards: [
+                {
+                    sections: [
                         {
-                            buttons: [textButton('GOTO REVIEW', pullRequest.html_url)]
+                            widgets: [
+                                {
+                                    textParagraph: {
+                                        text: `<b><font color="${getTextColor(pullRequest.state, pullRequest.merged)}">${pullRequest.title}</font></b>`
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            widgets: [
+                                {
+                                    keyValue: {
+                                        topLabel: 'repository',
+                                        content: `${owner}/${repo}`,
+                                        contentMultiline: true,
+                                        button: textButton('OPEN REPOSITORY', pullRequestPayload.repository.html_url)
+                                    }
+                                },
+                                {
+                                    keyValue: { topLabel: 'ref', content: pullRequest.head.ref }
+                                },
+                                {
+                                    keyValue: {
+                                        topLabel: 'author',
+                                        content: pullRequest.user.login
+                                    }
+                                }
+                            ]
                         }
                     ]
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                });
-            }
-            const response = yield axios_1.default.post(url, body);
-            if (response.status !== 200) {
-                throw new Error(`Google Chat notification failed. response status=${response.status}`);
-            }
+                }
+            ]
+        };
+        if (pullRequest.state !== 'closed') {
+            body.cards[0].sections.push({
+                widgets: [
+                    {
+                        buttons: [textButton('GOTO REVIEW', pullRequest.html_url)]
+                    }
+                ]
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            });
+        }
+        return body;
+    });
+}
+function processPullRequestComment() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const commentPayload = github.context
+            .payload;
+        const pullRequest = commentPayload.pull_request;
+        const comment = commentPayload.comment;
+        return {
+            cards: [
+                {
+                    sections: [
+                        {
+                            widgets: [
+                                {
+                                    textParagraph: {
+                                        text: `<b>Comment to <font color="#ff9800">${pullRequest.title}</font></b>`
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            widgets: [
+                                {
+                                    textParagraph: {
+                                        text: `<font color="#333">${comment.body}</font><br>By <b>${comment.user.login}</b>`
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            widgets: [
+                                {
+                                    buttons: [textButton('GOTO CHECK', comment.html_url)]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        };
+    });
+}
+function sendMessage(url) {
+    return __awaiter(this, void 0, void 0, function* () {
+        core.info(github.context.eventName);
+        core.info(JSON.stringify(github.context.payload));
+        let body = null;
+        if (github.context.eventName === 'pull_request') {
+            body = yield processPullRequest();
+        }
+        else if (github.context.eventName === 'pull_request_review_comment') {
+            body = yield processPullRequestComment();
         }
         else {
             core.info(`event: ${github.context.eventName} not pull_request`);
+            return;
+        }
+        const response = yield axios_1.default.post(url, body);
+        if (response.status !== 200) {
+            throw new Error(`Google Chat notification failed. response status=${response.status}`);
         }
     });
 }

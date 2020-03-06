@@ -10,10 +10,9 @@ Add `notify.yml` to `.github/workflows/`
 name: notify
 on:
   pull_request:
-    types:
-      - opened
-      - reopened
-      - closed
+    types: [opened, reopened, closed]
+  pull_request_review_comment:
+    types: [created]
 jobs:
   notify:
     runs-on: ubuntu-latest
