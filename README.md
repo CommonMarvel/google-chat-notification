@@ -2,6 +2,10 @@
   <a href="https://github.com/CommonMarvel/google-chat-notification/actions"><img alt="google-chat-notification status" src="https://github.com/CommonMarvel/google-chat-notification/workflows/build-test/badge.svg"></a>
 </p>
 
+![Success](doc/new.png "New")
+![Cancelled](doc/comment.png "Comment")
+![Failure](doc/merged.png "Merged")
+
 ### Usage
 
 Add `notify.yml` to `.github/workflows/`
