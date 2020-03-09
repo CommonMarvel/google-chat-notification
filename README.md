@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Google Chat Notification
-      uses: CommonMarvel/google-chat-notification@v1.0.0
+      uses: CommonMarvel/google-chat-notification@v1.1.1
       with:
         url: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
 ```
