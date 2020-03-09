@@ -46,7 +46,9 @@ async function processPullRequest(): Promise<object> {
                   text: `<b><font color="${getTextColor(
                     pullRequest.state,
                     pullRequest.merged
-                  )}">${pullRequest.title}</font></b>`
+                  )}">${pullRequest.title}</font> has been ${
+                    pullRequest.merged ? 'merged' : pullRequest.state
+                  }</br>`
                 }
               }
             ]
@@ -88,7 +90,7 @@ async function processPullRequestComment(): Promise<object> {
             widgets: [
               {
                 textParagraph: {
-                  text: `<b><font color="#ff9800">${pullRequest.title}</font></b>`
+                  text: `<b>Comment to <font color="#ff9800">${pullRequest.title}</font></br>`
                 }
               }
             ]
