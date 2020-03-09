@@ -5250,7 +5250,7 @@ function processPullRequest() {
             .payload;
         const pullRequest = pullRequestPayload.pull_request;
         core.info(`${pullRequest.title} ${pullRequest.state} by ${pullRequest.user.login}`);
-        const body = {
+        return {
             cards: [
                 {
                     sections: [
@@ -5267,20 +5267,17 @@ function processPullRequest() {
                             widgets: [
                                 {
                                     keyValue: {
-                                        topLabel: 'repository',
-                                        content: `${owner}/${repo}`,
-                                        contentMultiline: true,
-                                        button: textButton('OPEN REPOSITORY', pullRequestPayload.repository.html_url)
+                                        topLabel: `${owner}/${repo}`,
+                                        content: pullRequest.head.ref,
+                                        bottomLabel: pullRequest.user.login
                                     }
-                                },
+                                }
+                            ]
+                        },
+                        {
+                            widgets: [
                                 {
-                                    keyValue: { topLabel: 'ref', content: pullRequest.head.ref }
-                                },
-                                {
-                                    keyValue: {
-                                        topLabel: 'author',
-                                        content: pullRequest.user.login
-                                    }
+                                    buttons: [textButton('GOTO REVIEW', pullRequest.html_url)]
                                 }
                             ]
                         }
@@ -5288,17 +5285,6 @@ function processPullRequest() {
                 }
             ]
         };
-        if (pullRequest.state !== 'closed') {
-            body.cards[0].sections.push({
-                widgets: [
-                    {
-                        buttons: [textButton('GOTO REVIEW', pullRequest.html_url)]
-                    }
-                ]
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            });
-        }
-        return body;
     });
 }
 function processPullRequestComment() {
@@ -5315,7 +5301,7 @@ function processPullRequestComment() {
                             widgets: [
                                 {
                                     textParagraph: {
-                                        text: `<b>Comment to <font color="#ff9800">${pullRequest.title}</font></b>`
+                                        text: `<b><font color="#ff9800">${pullRequest.title}</font></b>`
                                     }
                                 }
                             ]
@@ -5323,16 +5309,20 @@ function processPullRequestComment() {
                         {
                             widgets: [
                                 {
-                                    textParagraph: {
-                                        text: `<font color="#333">${comment.body}</font><br>By <b>${comment.user.login}</b>`
+                                    keyValue: {
+                                        topLabel: 'Comment from',
+                                        content: comment.user.login,
+                                        button: {
+                                            textButton: {
+                                                text: 'CHECK',
+                                                onClick: {
+                                                    openLink: {
+                                                        url: comment.html_url
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
-                                }
-                            ]
-                        },
-                        {
-                            widgets: [
-                                {
-                                    buttons: [textButton('GOTO CHECK', comment.html_url)]
                                 }
                             ]
                         }

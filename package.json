@@ -1,6 +1,6 @@
 {
   "name": "typescript-action-google-chat-notification",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "google-chat-notification template action",
   "main": "lib/main.js",
   "scripts": {
