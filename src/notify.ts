@@ -121,6 +121,13 @@ async function processPullRequestComment(): Promise<object> {
   }
 }
 
+async function processRelease(): Promise<void> {
+  const pullRequestPayload = github.context
+    .payload as Webhooks.WebhookPayloadRelease
+  core.info('==== Release ====')
+  core.info(JSON.stringify(pullRequestPayload))
+}
+
 export async function sendMessage(url: string): Promise<void> {
   core.info(github.context.eventName)
   core.info(JSON.stringify(github.context.payload))
@@ -129,6 +136,8 @@ export async function sendMessage(url: string): Promise<void> {
     body = await processPullRequest()
   } else if (github.context.eventName === 'pull_request_review_comment') {
     body = await processPullRequestComment()
+  } else if (github.context.eventName === 'release') {
+    await processRelease()
   } else {
     core.info(`event: ${github.context.eventName} not pull_request`)
     return
