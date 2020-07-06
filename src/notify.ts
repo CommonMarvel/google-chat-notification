@@ -132,7 +132,7 @@ async function processRelease(): Promise<object> {
             widgets: [
               {
                 textParagraph: {
-                  text: `<b>${releasePayload.repository.full_name}@<font color="#5a5aad">${releasePayload.release.tag_name}</font></br>`
+                  text: `<b><font color="#009393">${releasePayload.repository.full_name}: ${releasePayload.release.tag_name}</font></br>`
                 }
               }
             ]
