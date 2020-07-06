@@ -5332,6 +5332,49 @@ function processPullRequestComment() {
         };
     });
 }
+function processRelease() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const releasePayload = github.context
+            .payload;
+        return {
+            cards: [
+                {
+                    sections: [
+                        {
+                            widgets: [
+                                {
+                                    textParagraph: {
+                                        text: `<b>${releasePayload.repository.full_name}@<font color="#5a5aad">${releasePayload.release.tag_name}</font></br>`
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            widgets: [
+                                {
+                                    keyValue: {
+                                        topLabel: 'Release by',
+                                        content: releasePayload.release.author.login,
+                                        button: {
+                                            textButton: {
+                                                text: 'CHECK',
+                                                onClick: {
+                                                    openLink: {
+                                                        url: releasePayload.release.html_url
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        };
+    });
+}
 function sendMessage(url) {
     return __awaiter(this, void 0, void 0, function* () {
         core.info(github.context.eventName);
@@ -5342,6 +5385,9 @@ function sendMessage(url) {
         }
         else if (github.context.eventName === 'pull_request_review_comment') {
             body = yield processPullRequestComment();
+        }
+        else if (github.context.eventName === 'release') {
+            body = yield processRelease();
         }
         else {
             core.info(`event: ${github.context.eventName} not pull_request`);

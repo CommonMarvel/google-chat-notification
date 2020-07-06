@@ -121,11 +121,46 @@ async function processPullRequestComment(): Promise<object> {
   }
 }
 
-async function processRelease(): Promise<void> {
-  const pullRequestPayload = github.context
+async function processRelease(): Promise<object> {
+  const releasePayload = github.context
     .payload as Webhooks.WebhookPayloadRelease
-  core.info('==== Release ====')
-  core.info(JSON.stringify(pullRequestPayload))
+  return {
+    cards: [
+      {
+        sections: [
+          {
+            widgets: [
+              {
+                textParagraph: {
+                  text: `<b>${releasePayload.repository.full_name}@<font color="#5a5aad">${releasePayload.release.tag_name}</font></br>`
+                }
+              }
+            ]
+          },
+          {
+            widgets: [
+              {
+                keyValue: {
+                  topLabel: 'Release by',
+                  content: releasePayload.release.author.login,
+                  button: {
+                    textButton: {
+                      text: 'CHECK',
+                      onClick: {
+                        openLink: {
+                          url: releasePayload.release.html_url
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 }
 
 export async function sendMessage(url: string): Promise<void> {
@@ -137,7 +172,7 @@ export async function sendMessage(url: string): Promise<void> {
   } else if (github.context.eventName === 'pull_request_review_comment') {
     body = await processPullRequestComment()
   } else if (github.context.eventName === 'release') {
-    await processRelease()
+    body = await processRelease()
   } else {
     core.info(`event: ${github.context.eventName} not pull_request`)
     return
