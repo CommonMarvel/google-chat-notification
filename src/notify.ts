@@ -167,7 +167,10 @@ export async function sendMessage(url: string): Promise<void> {
   core.info(github.context.eventName)
   core.info(JSON.stringify(github.context.payload))
   let body = null
-  if (github.context.eventName === 'pull_request') {
+  if (
+    github.context.eventName === 'pull_request' ||
+    github.context.eventName === 'pull_request_target'
+  ) {
     body = await processPullRequest()
   } else if (github.context.eventName === 'pull_request_review_comment') {
     body = await processPullRequestComment()

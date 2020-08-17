@@ -5380,7 +5380,8 @@ function sendMessage(url) {
         core.info(github.context.eventName);
         core.info(JSON.stringify(github.context.payload));
         let body = null;
-        if (github.context.eventName === 'pull_request') {
+        if (github.context.eventName === 'pull_request' ||
+            github.context.eventName === 'pull_request_target') {
             body = yield processPullRequest();
         }
         else if (github.context.eventName === 'pull_request_review_comment') {
