@@ -46,7 +46,7 @@ async function processPullRequest(): Promise<object> {
                   text: `<b><font color="${getTextColor(
                     pullRequest.state,
                     pullRequest.merged
-                  )}">${pullRequest.title}</font> has been ${
+                  )}">${pullRequest.title}</font> is ${
                     pullRequest.merged ? 'merged' : pullRequest.state
                   }</br>`
                 }
