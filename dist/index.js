@@ -5258,7 +5258,7 @@ function processPullRequest() {
                             widgets: [
                                 {
                                     textParagraph: {
-                                        text: `<b><font color="${getTextColor(pullRequest.state, pullRequest.merged)}">${pullRequest.title}</font> has been ${pullRequest.merged ? 'merged' : pullRequest.state}</br>`
+                                        text: `<b><font color="${getTextColor(pullRequest.state, pullRequest.merged)}">${pullRequest.title}</font> is ${pullRequest.merged ? 'merged' : pullRequest.state}</br>`
                                     }
                                 }
                             ]
