@@ -9,7 +9,7 @@ interface TextButton {
 
 function getTextColor(state: string, isMerged: boolean): string {
   if (isMerged) {
-    return '#6f42c1'
+    return '#35dbd9'
   }
 
   if (state === 'closed') {
