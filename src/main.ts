@@ -7,7 +7,7 @@ async function run(): Promise<void> {
     await sendMessage(url)
     core.info('sent message')
   } catch (error) {
-    core.setFailed(error.message)
+    core.setFailed((error as {message: string}).message)
   }
 }
 

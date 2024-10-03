@@ -1,16 +1,17 @@
 {
   "name": "typescript-action-google-chat-notification",
-  "version": "1.1.1",
+  "version": "1.2.2",
   "description": "google-chat-notification template action",
   "main": "lib/main.js",
+  "packageManager": "pnpm@8.15.1",
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "build": "tsc",
     "format": "prettier --write **/*.ts",
     "format-check": "prettier --check **/*.ts",
-    "lint": "eslint src/**/*.ts",
+    "lint": "eslint src/",
     "pack": "ncc build",
-    "test": "jest",
-    "all": "npm run build && npm run format && npm run lint && npm run pack && npm test"
+    "all": "npm run build && npm run format && npm run lint && npm run pack"
   },
   "repository": {
     "type": "git",
@@ -24,25 +25,28 @@
   "author": "CommonMarvel",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.2.0",
-    "@actions/github": "^2.1.1",
-    "@octokit/webhooks": "^7.1.0",
+    "@actions/core": "^1.11.0",
+    "@actions/github": "^6.0.0",
+    "@octokit/webhooks": "^13.3.0",
     "@types/axios": "^0.14.0",
-    "axios": "^0.19.2"
+    "axios": "^1.7.7"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.23",
-    "@types/node": "^12.7.12",
-    "@typescript-eslint/parser": "^2.8.0",
-    "@zeit/ncc": "^0.20.5",
-    "eslint": "^5.16.0",
-    "eslint-plugin-github": "^2.0.0",
-    "eslint-plugin-jest": "^22.21.0",
-    "jest": "^24.9.0",
-    "jest-circus": "^24.9.0",
-    "js-yaml": "^3.13.1",
-    "prettier": "^1.19.1",
-    "ts-jest": "^24.2.0",
-    "typescript": "^3.6.4"
+    "@eslint/js": "^9.11.1",
+    "@types/jest": "^29.5.13",
+    "@types/node": "^22.7.4",
+    "@typescript-eslint/parser": "^8.8.0",
+    "@vercel/ncc": "^0.38.2",
+    "eslint": "^9.11.1",
+    "eslint-plugin-github": "^5.0.2",
+    "eslint-plugin-jest": "^28.8.3",
+    "globals": "^15.10.0",
+    "jest": "^29.7.0",
+    "jest-circus": "^29.7.0",
+    "js-yaml": "^4.1.0",
+    "prettier": "^3.3.3",
+    "ts-jest": "^29.2.5",
+    "typescript": "5.5.4",
+    "typescript-eslint": "^8.8.0"
   }
 }

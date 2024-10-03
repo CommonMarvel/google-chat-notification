@@ -1,6 +1,5 @@
-import * as core from '@actions/core'
-import * as github from '@actions/github'
-import * as Webhooks from '@octokit/webhooks'
+import core from '@actions/core'
+import github from '@actions/github'
 import axios from 'axios'
 
 interface TextButton {
@@ -28,9 +27,8 @@ const textButton = (text: string, url: string): TextButton => ({
 
 async function processPullRequest(): Promise<object> {
   const {owner, repo} = github.context.repo
-  const pullRequestPayload = github.context
-    .payload as Webhooks.WebhookPayloadPullRequest
-  const pullRequest = pullRequestPayload.pull_request
+  const pullRequestPayload = github.context.payload
+  const pullRequest = pullRequestPayload.pull_request!
   core.info(
     `${pullRequest.title} ${pullRequest.state} by ${pullRequest.user.login}`
   )
@@ -67,7 +65,7 @@ async function processPullRequest(): Promise<object> {
           {
             widgets: [
               {
-                buttons: [textButton('GOTO REVIEW', pullRequest.html_url)]
+                buttons: [textButton('GOTO REVIEW', pullRequest.html_url || '')]
               }
             ]
           }
@@ -78,8 +76,7 @@ async function processPullRequest(): Promise<object> {
 }
 
 async function processPullRequestComment(): Promise<object> {
-  const commentPayload = github.context
-    .payload as Webhooks.WebhookPayloadPullRequestReviewComment
+  const commentPayload = github.context.payload
   const pullRequest = commentPayload.pull_request
   const comment = commentPayload.comment
   return {
@@ -90,7 +87,7 @@ async function processPullRequestComment(): Promise<object> {
             widgets: [
               {
                 textParagraph: {
-                  text: `<b>Comment to <font color="#ff9800">${pullRequest.title}</font></br>`
+                  text: `<b>Comment to <font color="#ff9800">${pullRequest?.title}</font></br>`
                 }
               }
             ]
@@ -100,13 +97,13 @@ async function processPullRequestComment(): Promise<object> {
               {
                 keyValue: {
                   topLabel: 'Comment from',
-                  content: comment.user.login,
+                  content: comment?.user.login,
                   button: {
                     textButton: {
                       text: 'CHECK',
                       onClick: {
                         openLink: {
-                          url: comment.html_url
+                          url: comment?.html_url
                         }
                       }
                     }
@@ -122,8 +119,7 @@ async function processPullRequestComment(): Promise<object> {
 }
 
 async function processRelease(): Promise<object> {
-  const releasePayload = github.context
-    .payload as Webhooks.WebhookPayloadRelease
+  const releasePayload = github.context.payload
   return {
     cards: [
       {
@@ -132,7 +128,7 @@ async function processRelease(): Promise<object> {
             widgets: [
               {
                 textParagraph: {
-                  text: `<b><font color="#009393">${releasePayload.repository.full_name}: ${releasePayload.release.tag_name}</font></br>`
+                  text: `<b><font color="#009393">${releasePayload?.repository?.full_name}: ${releasePayload.release.tag_name}</font></br>`
                 }
               }
             ]
