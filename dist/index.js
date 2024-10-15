@@ -6,6 +6,29 @@
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -15,25 +38,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const core_1 = __importDefault(__nccwpck_require__(7463));
+const core = __importStar(__nccwpck_require__(7463));
 const notify_1 = __nccwpck_require__(6492);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const url = core_1.default.getInput('url', { required: true });
+            const url = core.getInput('url', { required: true });
             yield (0, notify_1.sendMessage)(url);
-            core_1.default.info('sent message');
+            core.info('sent message');
         }
         catch (error) {
-            core_1.default.setFailed(error.message);
+            core.setFailed(error.message);
         }
     });
 }
-run().catch(e => core_1.default.info(e));
+run().catch(e => core.info(e));
 
 
 /***/ }),
@@ -43,6 +63,29 @@ run().catch(e => core_1.default.info(e));
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -57,7 +100,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.sendMessage = sendMessage;
-const core_1 = __importDefault(__nccwpck_require__(7463));
+const core = __importStar(__nccwpck_require__(7463));
 const github_1 = __importDefault(__nccwpck_require__(3802));
 const axios_1 = __importDefault(__nccwpck_require__(2759));
 function getTextColor(state, isMerged) {
@@ -80,7 +123,7 @@ function processPullRequest() {
         const { owner, repo } = github_1.default.context.repo;
         const pullRequestPayload = github_1.default.context.payload;
         const pullRequest = pullRequestPayload.pull_request;
-        core_1.default.info(`${pullRequest.title} ${pullRequest.state} by ${pullRequest.user.login}`);
+        core.info(`${pullRequest.title} ${pullRequest.state} by ${pullRequest.user.login}`);
         return {
             cards: [
                 {
@@ -207,8 +250,8 @@ function processRelease() {
 }
 function sendMessage(url) {
     return __awaiter(this, void 0, void 0, function* () {
-        core_1.default.info(github_1.default.context.eventName);
-        core_1.default.info(JSON.stringify(github_1.default.context.payload));
+        core.info(github_1.default.context.eventName);
+        core.info(JSON.stringify(github_1.default.context.payload));
         let body = null;
         if (github_1.default.context.eventName === 'pull_request') {
             body = yield processPullRequest();
@@ -220,7 +263,7 @@ function sendMessage(url) {
             body = yield processRelease();
         }
         else {
-            core_1.default.info(`event: ${github_1.default.context.eventName} not pull_request`);
+            core.info(`event: ${github_1.default.context.eventName} not pull_request`);
             return;
         }
         const response = yield axios_1.default.post(url, body);

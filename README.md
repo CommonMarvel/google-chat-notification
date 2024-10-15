@@ -25,3 +25,9 @@ jobs:
       with:
         url: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
 ```
+
+### Update action runner
+```bash
+$ pnpm build
+$ pnpm pack
+```

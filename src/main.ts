@@ -1,4 +1,4 @@
-import core from '@actions/core'
+import * as core from '@actions/core'
 import {sendMessage} from './notify'
 
 async function run(): Promise<void> {
