@@ -101,7 +101,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.sendMessage = sendMessage;
 const core = __importStar(__nccwpck_require__(7463));
-const github_1 = __importDefault(__nccwpck_require__(3802));
+const github = __importStar(__nccwpck_require__(3802));
 const axios_1 = __importDefault(__nccwpck_require__(2759));
 function getTextColor(state, isMerged) {
     if (isMerged) {
@@ -120,8 +120,8 @@ const textButton = (text, url) => ({
 });
 function processPullRequest() {
     return __awaiter(this, void 0, void 0, function* () {
-        const { owner, repo } = github_1.default.context.repo;
-        const pullRequestPayload = github_1.default.context.payload;
+        const { owner, repo } = github.context.repo;
+        const pullRequestPayload = github.context.payload;
         const pullRequest = pullRequestPayload.pull_request;
         core.info(`${pullRequest.title} ${pullRequest.state} by ${pullRequest.user.login}`);
         return {
@@ -163,7 +163,7 @@ function processPullRequest() {
 }
 function processPullRequestComment() {
     return __awaiter(this, void 0, void 0, function* () {
-        const commentPayload = github_1.default.context.payload;
+        const commentPayload = github.context.payload;
         const pullRequest = commentPayload.pull_request;
         const comment = commentPayload.comment;
         return {
@@ -208,7 +208,7 @@ function processPullRequestComment() {
 function processRelease() {
     return __awaiter(this, void 0, void 0, function* () {
         var _a;
-        const releasePayload = github_1.default.context.payload;
+        const releasePayload = github.context.payload;
         return {
             cards: [
                 {
@@ -250,20 +250,20 @@ function processRelease() {
 }
 function sendMessage(url) {
     return __awaiter(this, void 0, void 0, function* () {
-        core.info(github_1.default.context.eventName);
-        core.info(JSON.stringify(github_1.default.context.payload));
+        core.info(github.context.eventName);
+        core.info(JSON.stringify(github.context.payload));
         let body = null;
-        if (github_1.default.context.eventName === 'pull_request') {
+        if (github.context.eventName === 'pull_request') {
             body = yield processPullRequest();
         }
-        else if (github_1.default.context.eventName === 'pull_request_review_comment') {
+        else if (github.context.eventName === 'pull_request_review_comment') {
             body = yield processPullRequestComment();
         }
-        else if (github_1.default.context.eventName === 'release') {
+        else if (github.context.eventName === 'release') {
             body = yield processRelease();
         }
         else {
-            core.info(`event: ${github_1.default.context.eventName} not pull_request`);
+            core.info(`event: ${github.context.eventName} not pull_request`);
             return;
         }
         const response = yield axios_1.default.post(url, body);
